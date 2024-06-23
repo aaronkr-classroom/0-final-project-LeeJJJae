@@ -1,14 +1,47 @@
 <div class="data-form">
-  <form class="form-signin" action="<%=`/games/${game._id}/update?_method=PUT`%>" method="POST">
-    <h2 class="form-signin-heading">Edit game:</h2>
+  <form class="form-signin" action="<%= `/games/${game._id}/update?_method=PUT` %>" method="POST">
+    <h2 class="form-signin-heading">Edit Game:</h2>
+    
     <label for="inputTitle">Title</label>
-    <input type="text" name="title" id="inputTitle" class="form-control" value="<%= game.title %>" placeholder="Title" autofocus>
+    <input 
+      type="text" 
+      name="title" 
+      id="inputTitle" 
+      class="form-control" 
+      value="<%= game.title %>" 
+      placeholder="Title" 
+      required 
+      autofocus>
+      
     <label for="inputDescription">Description</label>
-    <input type="text" name="description" id="inputDescription" class="form-control" value="<%= game.description %>" placeholder="Description">
-    <label for="inputMaxStudents">Max Students</label>
-    <input type="text" name="maxStudents" id="inputMaxStudents" pattern="\d*" class="form-control" value="<%= game.maxStudents %>" placeholder="Max Students" required>
+    <textarea 
+      name="description" 
+      id="inputDescription" 
+      class="form-control" 
+      placeholder="Description" 
+      required><%= game.description %></textarea>
+      
+    <label for="inputMaxPlayers">Max Players</label>
+    <input 
+      type="number" 
+      name="maxPlayers" 
+      id="inputMaxPlayers" 
+      class="form-control" 
+      value="<%= game.maxPlayers %>" 
+      placeholder="Max Players" 
+      required>
+      
     <label for="inputCost">Cost</label>
-    <input type="text" name="cost" id="inputCost" pattern="\d*" class="form-control" value="<%= game.cost %>" placeholder="Cost" required>
-    <br /><button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+    <input 
+      type="number" 
+      name="cost" 
+      id="inputCost" 
+      class="form-control" 
+      value="<%= game.cost %>" 
+      placeholder="Cost" 
+      required>
+      
+    <br />
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
   </form>
 </div>

@@ -1,43 +1,37 @@
-<h1 class="center">Game Data for
-  <%= game.title %>
-</h1>
+<!-- views/games/show.ejs -->
+
+<h1 class="center">Game Data for <%= game.title %></h1>
 
 <table class="table">
   <tr>
     <th>Title</th>
-    <td>
-      <%= game.title %>
-    </td>
+    <td><%= game.title %></td>
   </tr>
   <tr>
     <th>Description</th>
-    <td>
-      <%= game.description%>
-    </td>
+    <td><%= game.description %></td>
   </tr>
   <tr>
     <th>Max Students</th>
-    <td>
-      <%= game.maxStudents%>
-    </td>
+    <td><%= game.maxStudents %></td>
   </tr>
   <tr>
     <th>Cost</th>
-    <td>$
-      <%= game.cost%>
-    </td>
+    <td>$ <%= game.cost %></td>
   </tr>
 </table>
 
-
 <div>
-  <a class="button" href="<%=`/games/${game._id}/edit`%>">
+  <a class="btn btn-primary" href="<%=`/games/${game._id}/edit`%>">
     Edit Game Details
   </a>
 </div>
+
 <div>
-  <a class="button" href="<%= `/games/${game._id}/delete?_method=DELETE` %>" onclick="return confirm('Are you sure you want to delete this record?')" a>Delete</a>
+  <a class="btn btn-danger" href="<%= `/games/${game._id}/delete?_method=DELETE` %>"
+    onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
 </div>
+
 <div>
-  <a class="button" href="/games">View all games</a>
+  <a class="btn btn-secondary" href="/games">View all games</a>
 </div>

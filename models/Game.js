@@ -1,20 +1,19 @@
-// models/Game.js
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    unique: true, // 유일성을 보장할 필요가 있는 경우에만 설정
+    unique: true, // Ensure the game title is unique
   },
   description: {
     type: String,
     required: true,
   },
-  maxStudents: {
+  maxPlayers: {
     type: Number,
     default: 0,
-    min: [0, "Game cannot have a negative number of students"],
+    min: [0, "Game cannot have a negative number of players"], // Updated to maxPlayers for consistency
   },
   cost: {
     type: Number,
@@ -22,7 +21,7 @@ const gameSchema = new mongoose.Schema({
     min: [0, "Game cannot have a negative cost"],
   },
 }, {
-  timestamps: true, // 생성 및 수정 시간 기록
+  timestamps: true, // Record creation and update timestamps
 });
 
 module.exports = mongoose.model("Game", gameSchema);
