@@ -1,25 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Edit <%= game.title %></title>
-</head>
-<body>
-  <h1>Edit <%= game.title %></h1>
-  <form action="/games/<%= game._id %>?_method=PUT" method="POST">
-    <label for="title">Title:</label>
-    <input type="text" name="title" id="title" value="<%= game.title %>" required>
-    <br>
-    <label for="director">Director:</label>
-    <input type="text" name="director" id="director" value="<%= game.director %>" required>
-    <br>
-    <label for="releaseDate">Release Date:</label>
-    <input type="date" name="releaseDate" id="releaseDate" value="<%= game.releaseDate.toISOString().substring(0, 10) %>" required>
-    <br>
-    <label for="genre">Genre:</label>
-    <input type="text" name="genre" id="genre" value="<%= game.genre %>" required>
-    <br>
-    <button type="submit">Update Game</button>
+<div class="data-form">
+  <form class="form-signin" action="<%=`/games/${game._id}/update?_method=PUT`%>" method="POST">
+    <h2 class="form-signin-heading">Edit game:</h2>
+    <label for="inputTitle">Title</label>
+    <input type="text" name="title" id="inputTitle" class="form-control" value="<%= game.title %>" placeholder="Title" autofocus>
+    <label for="inputDescription">Description</label>
+    <input type="text" name="description" id="inputDescription" class="form-control" value="<%= game.description %>" placeholder="Description">
+    <label for="inputMaxStudents">Max Students</label>
+    <input type="text" name="maxStudents" id="inputMaxStudents" pattern="\d*" class="form-control" value="<%= game.maxStudents %>" placeholder="Max Students" required>
+    <label for="inputCost">Cost</label>
+    <input type="text" name="cost" id="inputCost" pattern="\d*" class="form-control" value="<%= game.cost %>" placeholder="Cost" required>
+    <br /><button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
   </form>
-  <a href="/games/<%= game._id %>">Cancel</a>
-</body>
-</html>
+</div>

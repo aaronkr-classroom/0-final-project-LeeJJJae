@@ -1,33 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>New Movie</title>
-</head>
-<body>
-  <main class="container mt-5">
+<!-- views/users/new.ejs -->
+
+<!--
+  Listing 19.1 (p. 277)
+  사용자 생성 구축
+-->
+
+<main class="">
+  <div class="container col-xl-10 col-xxl-8 px-4 py-5">
     <div class="pt-5">
-      <h1>New Movie</h1>
-      <form action="/games" method="POST">
-        <div class="form-group">
-          <label for="title">Title:</label>
-          <input type="text" class="form-control" id="title" name="title" required>
+      <h1>Add New Game</h1>
+      <p>What will you teach today?</p>
+
+      <div class="row">
+        <div class="col-lg-6 mb-3 mt-3">
+          <div class="data-form">
+            <form class="form-signin" action="/games/create" method="POST">
+              <h2 class="form-signin-heading">Create a new game:</h2>
+              <label for="inputTitle">Title</label>
+              <input type="text" name="title" id="inputTitle" class="form-control" placeholder="Title" autofocus>
+              <label for="inputDescription">Description</label>
+              <input type="text" name="description" id="inputDescription" class="form-control" placeholder="Description">
+              <label for="inputMaxStudents">Number of players</label>
+              <input type="text" name="maxStudents" id="inputMaxStudents" pattern="\d*" class="form-control" placeholder="Max Students" required>
+              <label for="inputCost">Cost</label>
+              <input type="text" name="cost" id="inputCost" pattern="\d*" class="form-control" placeholder="Cost" required>
+              <br /><button class="btn btn-lg ut-red" type="submit">Create Game</button>
+            </form>
+          </div> 
         </div>
-        <div class="form-group">
-          <label for="director">Director:</label>
-          <input type="text" class="form-control" id="director" name="director" required>
+
+        <div class="col-lg-6 text-center text-lg-start mb-3 mt-5">
+          <figure>
+            <img
+              src="https://i.namu.wiki/i/1gnbY6XFP23v9uPav4gncPFynTfGnWEjqcTepKiWi1yYq_Mem4MlvZjGJcmmBQRxoIGdaoatEhNLHoE0XmdZEwb7Oc1iOtPk9EatHQz4ZkiIBzi0TQ5mhVtNiDKlsOnBfptYTuaO67_RSwQrGyUvog.webp"
+            />
+          </figure>
         </div>
-        <div class="form-group">
-          <label for="releaseDate">Release Date:</label>
-          <input type="date" class="form-control" id="releaseDate" name="releaseDate" required>
-        </div>
-        <div class="form-group">
-          <label for="genre">Genre:</label>
-          <input type="text" class="form-control" id="genre" name="genre" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Game</button>
-      </form>
-      <a href="/games" class="btn btn-secondary mt-3">Back</a>
+      </div>
     </div>
-  </main>
-</body>
-</html>
+  </div>
+</main>

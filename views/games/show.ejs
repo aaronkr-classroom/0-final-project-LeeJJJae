@@ -1,17 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= game.title %></title>
-</head>
-<body>
-  <h1><%= game.title %></h1>
-  <p>Director: <%= game.director %></p>
-  <p>Release Date: <%= movie.releaseDate.toDateString() %></p>
-  <p>Genre: <%= game.genre %></p>
-  <a href="/games/<%= game._id %>/edit">Edit</a>
-  <form action="/games/<%= game._id %>?_method=DELETE" method="POST" style="display:inline;">
-    <button type="submit">Delete</button>
-  </form>
-  <a href="/games">Back</a>
-</body>
-</html>
+<h1 class="center">Game Data for
+  <%= game.title %>
+</h1>
+
+<table class="table">
+  <tr>
+    <th>Title</th>
+    <td>
+      <%= game.title %>
+    </td>
+  </tr>
+  <tr>
+    <th>Description</th>
+    <td>
+      <%= game.description%>
+    </td>
+  </tr>
+  <tr>
+    <th>Max Students</th>
+    <td>
+      <%= game.maxStudents%>
+    </td>
+  </tr>
+  <tr>
+    <th>Cost</th>
+    <td>$
+      <%= game.cost%>
+    </td>
+  </tr>
+</table>
+
+
+<div>
+  <a class="button" href="<%=`/games/${game._id}/edit`%>">
+    Edit Game Details
+  </a>
+</div>
+<div>
+  <a class="button" href="<%= `/games/${game._id}/delete?_method=DELETE` %>" onclick="return confirm('Are you sure you want to delete this record?')" a>Delete</a>
+</div>
+<div>
+  <a class="button" href="/games">View all games</a>
+</div>
