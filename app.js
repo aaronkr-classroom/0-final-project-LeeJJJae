@@ -31,18 +31,15 @@ const pagesController = require("./controllers/pagesController"),
  */
 
 // 애플리케이션에 Mongoose 설정
-const mongoose = require("mongoose"), // mongoose를 요청
-  dbName = "ut-nodejs";
+const mongoose = require("mongoose"); // mongoose를 요청
 
 // 데이터베이스 연결 설정
-mongoose.connect( "mongodb+srv://ut-node:TIzqsIk4hXJdnHPT@ut-node.a39enzf.mongodb.net/?retryWrites=true&w=majority&appName=ut-node",{
-  useNewUrlParser: true,
-});
+mongoose.connect("mongodb+srv://ut-node:M1ujmODpxcnSvB11@ut-node.shy2gcv.mongodb.net/?retryWrites=true&w=majority&appName=UT-node");
 
 // 연결되면 메시지를 보냄
 const db = mongoose.connection;
 db.once("open", () => {
-  console.log(`Connected to ${dbName} MongoDB using Mongoose!`);
+  console.log("Connected to MongoDB");
 });
 
 /**
