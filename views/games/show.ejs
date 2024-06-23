@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= game.title %></title>
+</head>
+<body>
+  <h1><%= game.title %></h1>
+  <p>Director: <%= game.director %></p>
+  <p>Release Date: <%= movie.releaseDate.toDateString() %></p>
+  <p>Genre: <%= game.genre %></p>
+  <a href="/games/<%= game._id %>/edit">Edit</a>
+  <form action="/games/<%= game._id %>?_method=DELETE" method="POST" style="display:inline;">
+    <button type="submit">Delete</button>
+  </form>
+  <a href="/games">Back</a>
+</body>
+</html>

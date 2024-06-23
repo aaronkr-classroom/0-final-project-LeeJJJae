@@ -6,7 +6,7 @@
  * 구독자를 위한 컨트롤러 액션 정의
  */
 // 구독자 모델 요청
-const Subscriber = require("../models/Subscriber");
+const Subscriber = require("../models/subscriber");
 
 module.exports = {
   index: (req, res, next) => {

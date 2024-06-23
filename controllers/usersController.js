@@ -1,16 +1,138 @@
 // controllers/usersController.js
 "use strict";
 
-/**
- * Listing 18.9 (p. 268-269)
- * Listing 18.11 (p. 271)
- * userController.js에서 인덱스 액션 생성과 index 액션의 재방문
- */
-const User = require("../models/User"); // 사용자 모델 요청
+const passport = require("passport"),
+  User = require("../models/User"); // 사용자 모델 요청
+
+const getUserParams = (body) => {
+  return {
+    username: body.username,
+    name: {
+      first: body.first,
+      last: body.last,
+    },
+    email: body.email,
+    password: body.password,
+    profileImg: body.profileImg,
+  };
+};
 
 module.exports = {
+  /**
+   * =====================================================================
+   * User Authentication / 사용자 인증
+   * =====================================================================
+   */
+  login: (req, res) => {
+    res.render("users/login", {
+      page: "login",
+      title: "Login",
+    });
+  },
+
+  authenticate: passport.authenticate("local", {
+    // 성공, 실패의 플래시 메시지를 설정하고 사용자의 인중 상태에 따라 리디렉션할 경로를 지정한다
+    failureRedirect: "/users/login",
+    failureFlash: "Failed to login.",
+    successReturnToOrRedirect: "/",
+    successFlash: "Logged in!",
+  }), // passport의 authenticate 메소드를 사용해 사용자 인증
+
+  logout: (req, res, next) => {
+    req.logout(() => {
+      console.log("Logged out!");
+    }); // passport의 logout 메소드를 사용해 사용자 로그아웃
+    req.flash("success", "You have been logged out!"); // 로그아웃 성공 메시지
+    res.locals.redirect = "/"; // 홈페이지로 리디렉션
+    next();
+  },
+
+  redirectView: (req, res, next) => {
+    let redirectPath = res.locals.redirect;
+    if (redirectPath) res.redirect(redirectPath);
+    else next();
+  },
+
+  /**
+   * =====================================================================
+   * C: CREATE / 생성
+   * =====================================================================
+   */
+  new: (req, res) => {
+    res.render("users/new", {
+      page: "new-user",
+      title: "New User",
+    });
+  },
+
+  validate: (req, res, next) => {
+    // 사용자가 입력한 이메일 주소가 유효한지 확인
+    req
+      .sanitizeBody("email")
+      .normalizeEmail({
+        all_lowercase: true,
+      })
+      .trim(); // trim()으로 whitespace 제거
+    req.check("email", "Email is invalid").isEmail();
+    req.check("password", "Password cannot be empty").notEmpty(); // password 필드 유효성 체크
+
+    // 사용자가 입력한 비밀번호가 일치하는지 확인
+    req.getValidationResult().then((error) => {
+      // 앞에서의 유효성 체크 결과 수집
+      if (!error.isEmpty()) {
+        let messages = error.array().map((e) => e.msg);
+        req.skip = true; // skip 속성을 true로 설정
+        req.flash("error", messages.join(" and ")); // 에러 플래시 메시지로 추가
+        res.locals.redirect = "/users/new"; // new 뷰로 리디렉션 설정
+        next();
+      } else {
+        next(); // 다음 미들웨어 함수 호출
+      }
+    });
+  },
+
+  create: (req, res, next) => {
+    if (req.skip) next(); // 유효성 체크를 통과하지 못하면 다음 미들웨어 함수로 전달
+
+    let newUser = new User(getUserParams(req.body)); // Listing 22.3 (p. 328)
+
+    User.register(newUser, req.body.password, (error, user) => {
+      // 새로운 사용자 등록
+      if (user) {
+        // 새로운 사용자가 등록되면
+        req.flash(
+          "success",
+          `${user.fullName}'s account created successfully!`
+        ); // 플래시 메시지를 추가하고
+        res.locals.redirect = "/users"; // 사용자 인덱스 페이지로 리디렉션
+        next();
+      } else {
+        // 새로운 사용자가 등록되지 않으면
+        req.flash(
+          "error",
+          `Failed to create user account because: ${error.message}.`
+        ); // 에러 메시지를 추가하고
+        res.locals.redirect = "/users/new"; // 사용자 생성 페이지로 리디렉션
+        next();
+      }
+    });
+  },
+
+  /**
+   * =====================================================================
+   * R: READ / 조회
+   * =====================================================================
+   */
+
+  /**
+   * ------------------------------------
+   * ALL records / 모든 레코드
+   * ------------------------------------
+   */
   index: (req, res, next) => {
     User.find() // index 액션에서만 퀴리 실행
+      .populate("discussions") // 사용자의 토론을 가져오기 위해 populate 메소드 사용
+      .exec()
       .then((users) => {
         // 사용자 배열로 index 페이지 렌더링
         res.locals.users = users; // 응답상에서 사용자 데이터를 저장하고 다음 미들웨어 함수 호출
@@ -22,6 +144,7 @@ module.exports = {
         next(error); // 에러를 캐치하고 다음 미들웨어로 전달
       });
   },
+
   indexView: (req, res) => {
     res.render("users/index", {
       page: "users",
@@ -30,64 +153,9 @@ module.exports = {
   },
 
   /**
-   * 노트: 구독자 컨트롤러에서 index 액션이 getAllSubscribers를 대체한다. main.js에서 액션 관련
-   * 라우트 index를 가리키도록 수정하고 subscribers.ejs를 index.ejs로 변경된 점을 기억하자. 이
-   * 뷰는 views 폴더 아래 subscribers 폴더에 있어야 한다.
-   */
-
-  /**
-   * Listing 19.2 (p. 278)
-   * userController.js에 액션 생성 추가
-   */
-  // 폼의 렌더링을 위한 새로운 액션 추가
-  new: (req, res) => {
-    res.render("users/new", {
-      page: "new-user",
-      title: "New User",
-    });
-  },
-
-  // 사용자를 데이터베이스에 저장하기 위한 create 액션 추가
-  create: (req, res, next) => {
-    let userParams = {
-      name: {
-        first: req.body.first,
-        last: req.body.last,
-      },
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password,
-      profileImg: req.body.profileImg,
-    };
-    // 폼 파라미터로 사용자 생성
-    User.create(userParams)
-      .then((user) => {
-        res.locals.redirect = "/users";
-        res.locals.user = user;
-        next();
-      })
-      .catch((error) => {
-        console.log(`Error saving user: ${error.message}`);
-        next(error);
-      });
-  },
-
-  // 분리된 redirectView 액션에서 뷰 렌더링
-  redirectView: (req, res, next) => {
-    let redirectPath = res.locals.redirect;
-    if (redirectPath) res.redirect(redirectPath);
-    else next();
-  },
-
-  /**
-   * 노트: 구독자 컨트롤러에 new와 create 액션을 추가하는 것은 새로운 CRUD 액션을 맞춰
-   * getAllSubscribers와 saveSubscriber 액션을 삭제할 수 있다는 의미다. 게다가 홈
-   * 컨트롤러에서 할 것은 홈페이지인 index.ejs 제공밖에 없다.
-   */
-
-  /**
-   * Listing 19.7 (p. 285)
-   * userController.js에서 특정 사용자에 대한 show 액션 추가
+   * ------------------------------------
+   * SINGLE record / 단일 레코드
+   * ------------------------------------
    */
   show: (req, res, next) => {
     let userId = req.params.id; // request params로부터 사용자 ID 수집
@@ -102,7 +170,6 @@ module.exports = {
       });
   },
 
-  // show 뷰의 렌더링
   showView: (req, res) => {
     res.render("users/show", {
       page: "user-details",
@@ -111,10 +178,10 @@ module.exports = {
   },
 
   /**
-   * Listing 20.6 (p. 294)
-   * edit와 update 액션 추가
+   * =====================================================================
+   * U: UPDATE / 수정
+   * =====================================================================
    */
-  // edit 액션 추가
   edit: (req, res, next) => {
     let userId = req.params.id;
     User.findById(userId) // ID로 데이터베이스에서 사용자를 찾기 위한 findById 사용
@@ -131,19 +198,9 @@ module.exports = {
       });
   },
 
-  // update 액션 추가
   update: (req, res, next) => {
     let userId = req.params.id,
-      userParams = {
-        name: {
-          first: req.body.first,
-          last: req.body.last,
-        },
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        profileImg: req.body.profileImg,
-      }; // 요청으로부터 사용자 파라미터 취득
+      userParams = getUserParams(req.body);
 
     User.findByIdAndUpdate(userId, {
       $set: userParams,
@@ -160,8 +217,9 @@ module.exports = {
   },
 
   /**
-   * Listing 20.9 (p. 298)
-   * delete 액션의 추가
+   * =====================================================================
+   * D: DELETE / 삭제
+   * =====================================================================
    */
   delete: (req, res, next) => {
     let userId = req.params.id;

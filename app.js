@@ -1,4 +1,3 @@
-// app.js
 "use strict";
 
 /**
@@ -12,6 +11,9 @@ const express = require("express"), // express를 요청
   layouts = require("express-ejs-layouts"), // express-ejs-layout의 요청
   app = express(); // express 애플리케이션의 인스턴스화
 
+const session = require("express-session"), // 세션 미들웨어
+  flash = require("connect-flash"); // 플래시 메시지 미들웨어
+
 // controllers 폴더의 파일을 요청
 const pagesController = require("./controllers/pagesController"),
   subscribersController = require("./controllers/subscribersController"),
@@ -19,6 +21,7 @@ const pagesController = require("./controllers/pagesController"),
   coursesController = require("./controllers/coursesController"),
   talksController = require("./controllers/talksController"),
   trainsController = require("./controllers/trainsController"),
+  gamesController = require("./controllers/gamesController"), // games 컨트롤러 추가
   errorController = require("./controllers/errorController");
 
 /**
@@ -32,7 +35,7 @@ const mongoose = require("mongoose"), // mongoose를 요청
   dbName = "ut-nodejs";
 
 // 데이터베이스 연결 설정
-mongoose.connect(`mongodb://127.0.0.1:27017/${dbName}`, {
+mongoose.connect( "mongodb+srv://ut-node:TIzqsIk4hXJdnHPT@ut-node.a39enzf.mongodb.net/?retryWrites=true&w=majority&appName=ut-node",{
   useNewUrlParser: true,
 });
 
@@ -58,6 +61,30 @@ app.use(express.static("public"));
 // body-parser의 추가
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// 세션 미들웨어 설정
+app.use(
+  session({
+    secret: "your_secret_key", // 임의의 문자열을 넣어 세션 암호화를 설정합니다.
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// 플래시 메시지 미들웨어 설정
+app.use(flash());
+
+// 플래시 메시지를 로컬 변수로 설정하는 미들웨어 추가
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.flash();
+  next();
+});
+
+// loggedIn 변수를 설정하는 미들웨어 추가
+app.use((req, res, next) => {
+  res.locals.loggedIn = req.isAuthenticated ? req.isAuthenticated() : false;
+  next();
+});
 
 /**
  * =====================================================================
@@ -105,6 +132,22 @@ router.delete(
   subscribersController.delete,
   subscribersController.redirectView
 );
+
+/**
+ * Login/Logout
+ */
+router.get("/users/login", usersController.login); // 로그인 폼을 보기 위한 요청 처리
+router.post(
+  "/users/login",
+  usersController.validate, // strips . from email (used in `create` so necessary in `login` too)
+  usersController.authenticate,
+  usersController.redirectView
+); // 로그인 폼에서 받아온 데이터의 처리와 결과를 사용자 보기 페이지에 보여주기
+router.get(
+  "/users/logout",
+  usersController.logout,
+  usersController.redirectView
+); // 로그아웃을 위한 라우트 추가
 
 /**
  * Users
@@ -155,8 +198,6 @@ router.delete(
 /**
  * Talks
  */
-// router.get("/talks", talksController.index, talksController.indexView); // 모든 토크를 위한 라우트 추가
-// router.get("/talk/:id", talksController.show, talksController.showView); // 특정 토크를 위한 라우트 추가
 router.get("/talks", talksController.index, talksController.indexView); // index 라우트 생성
 router.get("/talks/new", talksController.new); // 생성 폼을 보기 위한 요청 처리
 router.post(
@@ -201,14 +242,24 @@ router.delete(
 );
 
 /**
+ * Games
+ */
+router.get("/games", gamesController.index); // index 라우트 생성
+router.get("/games/new", gamesController.new); // 생성 폼을 보기 위한 요청 처리
+router.post("/games", gamesController.create); // 생성 폼에서 받아온 데이터의 처리와 결과를 사용자 보기 페이지에 보여주기
+router.get("/games/:id", gamesController.show); // 특정 영화를 위한 라우트 추가
+router.get("/games/:id/edit", gamesController.edit); // viewing을 처리하기 위한 라우트 추가
+router.put("/games/:id", gamesController.update); // 편집 폼에서 받아온 데이터의 처리와 결과를 사용자 보기 페이지에 보여주기
+router.delete("/games/:id", gamesController.delete); // 삭제를 위한 라우트 추가
+
+/**
  * =====================================================================
  * Errors Handling & App Startup
  * =====================================================================
  */
 app.use(errorController.resNotFound); // 미들웨어 함수로 에러 처리 추가
-app.use(errorController.resInternalError);
+app.use(errorController.resInternalError); // 미들웨어 함수로 에러 처리 추가
 
 app.listen(app.get("port"), () => {
-  // 3000번 포트로 리스닝 설정
   console.log(`Server running at http://localhost:${app.get("port")}`);
 });

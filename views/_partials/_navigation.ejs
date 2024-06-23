@@ -4,7 +4,10 @@
 <nav class="menu">
   <ul class="nav-bar nav">
     <li class="nav-item">
-      <a class="nav-link menu-item" name="About" href="/about">소개</a>
+      <a class="nav-link menu-item" href="/">홈</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link menu-item" href="/about">소개</a>
     </li>
     <li class="nav-item dropdown">
       <a
@@ -13,13 +16,12 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        name="Transportation"
         href="/transportation"
         >교통수단</a
       >
       <div class="dropdown-menu" aria-labelledby="dropdown00">
         <a class="dropdown-item" href="/trains">Trains</a>
-        <a class="dropdown-item" href="/trains/new">Create New</a>
+        <a class="dropdown-item" href="/trains/new">Create New Train</a>
       </div>
     </li>
     <li class="nav-item dropdown">
@@ -29,13 +31,12 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        name="Subscribers"
         href="/subscribers"
         >구독자</a
       >
       <div class="dropdown-menu" aria-labelledby="dropdown01">
-        <a class="dropdown-item" href="/subscribers">View All</a>
-        <a class="dropdown-item" href="/subscribers/new">Create New</a>
+        <a class="dropdown-item" href="/subscribers">View All Subscribers</a>
+        <a class="dropdown-item" href="/subscribers/new">Create New Subscriber</a>
       </div>
     </li>
     <li class="nav-item dropdown">
@@ -45,13 +46,12 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        name="Users"
         href="/users"
         >사용자</a
       >
       <div class="dropdown-menu" aria-labelledby="dropdown02">
-        <a class="dropdown-item" href="/users">View All</a>
-        <a class="dropdown-item" href="/users/new">Create New</a>
+        <a class="dropdown-item" href="/users">View All Users</a>
+        <a class="dropdown-item" href="/users/new">Create New User</a>
       </div>
     </li>
     <li class="nav-item dropdown">
@@ -61,13 +61,12 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        name="Courses"
         href="/courses"
         >코스</a
       >
       <div class="dropdown-menu" aria-labelledby="dropdown03">
-        <a class="dropdown-item" href="/courses">View All</a>
-        <a class="dropdown-item" href="/courses/new">Create New</a>
+        <a class="dropdown-item" href="/courses">View All Courses</a>
+        <a class="dropdown-item" href="/courses/new">Create New Course</a>
       </div>
     </li>
     <li class="nav-item dropdown">
@@ -77,13 +76,27 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        name="Talks"
         href="/talks"
         >발표</a
       >
       <div class="dropdown-menu" aria-labelledby="dropdown04">
-        <a class="dropdown-item" href="/talks">View All</a>
-        <a class="dropdown-item" href="/talks/new">Create New</a>
+        <a class="dropdown-item" href="/talks">View All Talks</a>
+        <a class="dropdown-item" href="/talks/new">Create New Talk</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a
+        class="menu-item nav-link dropdown-toggle"
+        id="dropdown05"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        href="/games"
+        >게임</a
+      >
+      <div class="dropdown-menu" aria-labelledby="dropdown05">
+        <a class="dropdown-item" href="/games">View All Games</a>
+        <a class="dropdown-item" href="/games/new">Create New Game</a>
       </div>
     </li>
   </ul>

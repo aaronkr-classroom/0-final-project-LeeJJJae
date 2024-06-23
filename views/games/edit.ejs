@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit <%= game.title %></title>
+</head>
+<body>
+  <h1>Edit <%= game.title %></h1>
+  <form action="/games/<%= game._id %>?_method=PUT" method="POST">
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title" value="<%= game.title %>" required>
+    <br>
+    <label for="director">Director:</label>
+    <input type="text" name="director" id="director" value="<%= game.director %>" required>
+    <br>
+    <label for="releaseDate">Release Date:</label>
+    <input type="date" name="releaseDate" id="releaseDate" value="<%= game.releaseDate.toISOString().substring(0, 10) %>" required>
+    <br>
+    <label for="genre">Genre:</label>
+    <input type="text" name="genre" id="genre" value="<%= game.genre %>" required>
+    <br>
+    <button type="submit">Update Game</button>
+  </form>
+  <a href="/games/<%= game._id %>">Cancel</a>
+</body>
+</html>
